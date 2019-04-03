@@ -1,71 +1,129 @@
-//global functions
-//turning right (+) or left (-)
-int turn (double degrees) {
-set_create_angle(0);
-double createAngle = get_create_angle(0);
-if (degrees > 0) {
-	while (createAngle < degrees) {
+#include <kipr/botball.h>
+
+// Created on Sat Mar 2 2019
+void turnRight(int x) {
+	set_create_total_angle(0);
+	while (get_create_total_angle() > -x*1.15) {
 		create_drive_direct(50, -50);
-msleep(100); //might need to adjust interval depending on accuracy
-create_stop();
-createAngle = get_create_distance(0);
-}
-} 
-else if (degrees  == 0) {
-printf("did you mean to turn 0 degrees?");
-}
-else {
-	double negativeDeg = -1*degrees
-while (createAngle < negativeDeg) {
-create_drive_direct(-50, 50); //vs might need to change to go straight
-msleep(100);
-create_stop();
-createAngle = get_create_distance(0);
-}
+    }
+	create_stop();
 }
 
-return 0; }
-//moving straight forward (+) or backward (-)
-int straight (double millimeters) {
-set _create_distance(0);
-double createDistancemm = get_create_distance(0);
-if (millimeters > 0) {
-while (createDistancemm < millimeters) {
-create_drive_direct(50, 50); //vs might need to change to go straight
-msleep(100);
-create_stop();
-createDistancemm = get_create_distance(0);
+void goBackward(double inches) {
+    double millimeters = inches*25.4;
+	set_create_distance(0);
+	int distance = 0;
+	while (distance > -millimeters) {
+		create_drive_direct(-50, -50);
+		distance = get_create_distance();
+	}
+	create_stop();
 }
-}
-else if (millimeters == 0) {
-printf("did you mean to move 0 mm?");
-}
-else {
-	double negativeMm = -1*millimeters
-while (createDistancemm < negativeMm) {
-create_drive_direct(-50, -50); //vs might need to change to go straight
-msleep(100);
-create_stop();
-createDistancemm = get_create_distance([arg necessary?, if so use 0 to start]);
-}
-}
-return 0;
+int main() 
+{
+	create_connect();
+		//*Start left (point away from fire zone)
+    
+	printf("Claw open\n");
+		//open claw
+	
+	printf("Leave start box 22.75 in = 578 mm \n");
+		goBackward(22.75);
+	
+	printf("Turn right 90 \n");
+		turnRight(90);
+    
+    printf("Go backwards to poms 19in = 482mm\n");
+		goBackward(19);
+		
+	printf("Turn right 90 \n");
+		turnRight(90);
+			
+	printf("Go backwards and collect poms 64.125in=1629mm \n");
+		goBackward(64.125);
+		
+	printf("Close claw\n");
+		//close claw
+	
+	printf("Turn right 90");
+		turnRight(90);
+    
+    printf("Go backwards for 30 in = 762 mm \n");
+		goBackward(30);
+		
+	printf("Raise claw \n");
+		//raise claw
+	
+	printf("Open claw");
+		//open claw
+	
+    create_disconnect();
+	return 0;
 }
 
-//main script does the stuff
-int main () {
-//light sensor stuff to be added later
-create_connect();
-straight([# mm (+)]);
-turn(-90);
-straight([# mm (+)]);
-turn(-90);
-straight([# mm (+)]);
-turn(90);
-straight([# mm (+)]);
-turn(90);
-straight([# mm (+)]);
-turn([# degrees (+)]); //angle unknown
-//Drop poms in coupler
-create_disconnect();
-return 0; }
+April 1 code 
+#include <kipr/botball.h>
+
+// Created on Sat Mar 2 2019
+void turnLeft(int x) {
+	set_create_total_angle(0);
+	while (get_create_total_angle() > -x*1.15) {
+		create_drive_direct(-50, 50);
+    }
+	create_stop();
+}
+
+void goForward(double inches) {
+    double millimeters = inches*25.4;
+	set_create_distance(0);
+	int distance = 0;
+	while (distance > -millimeters) {
+		create_drive_direct(50, 50);
+		distance = get_create_distance();
+	}
+	create_stop();
+}
+int main() 
+{
+    wait_for_light(2);
+    printf("I see the light!\n");
+    
+	create_connect();
+		//*Start right (point towards utility zone)
+	printf("Claw open\n");
+		//open claw
+	motor(2,0);
+	printf("Leave start box 22.75 in = 578 mm \n");
+		goForward(1.00);
+    	msleep(1000);
+	
+	printf("Turn left 90 \n");
+		turnLeft(90);
+    
+    printf("Go forwards to poms 19in = 482mm\n");
+		goForward(19);
+		
+	printf("Turn left 90 \n");
+		turnLeft(90);
+			
+	printf("Go forwards and collect poms 64.125in=1629mm \n");
+		goForward(64.125);
+		
+	printf("Close claw\n");
+		//close claw
+	motor(2,-1000);
+	printf("Turn left 90");
+		turnLeft(90);
+    
+    printf("Go forwards for 30 in = 762 mm \n");
+		goForward(-30);
+		
+	printf("Raise claw \n");
+		//raise claw
+	set_servo_position(3,1500);
+	printf("Open claw");
+		//open claw
+	motor(2,1000);
+    create_disconnect();
+	return 0;
+}
